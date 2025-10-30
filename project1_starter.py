@@ -3,43 +3,23 @@ COMP 163 - Project 1: Character Creator & Saving/Loading
 Name: Marcellus Hutchins
 Date: 10/27/25
 
-AI Usage: [Document any AI assistance used]
-Example: AI helped with file I/O error handling logic in save_character function
+AI Usage: [AI helped with logic handling and invalid directory path's in save_character,]
 """
+import os
 
-def create_character(name, character_class,):
-    if character_class == 'Warrior':
+
+def create_character(name, character_class):
+    class_options = ["Warrior", "Mage", "Rogue", "Cleric"]
+    if character_class in class_options:
         character = {'name' : name,
         'class' : character_class,
         'level' : 1,
-        'health' : 100,
+        'health' : 50,
         'gold' : 100,
         'strength' : 10,
-        'magic' : 2}
-    elif character_class == 'Mage':
-        character = {'name' : name,
-        'class' : character_class,
-        'level' : 1,
-        'health' : 60,
-        'gold' : 100,
-        'strength' : 3,
         'magic' : 10}
-    elif character_class == 'Rogues':
-        character = {'name' : name,
-        'class' : character_class,
-        'level' : 1,
-        'health' : 30,
-        'gold' : 100,
-        'strength' : 6,
-        'magic' : 5}
-    elif character_class == 'Clerics':
-        character = {'name' : name,
-        'class' : character_class,
-        'level' : 1,
-        'health' : 90,
-        'gold' : 100,
-        'strength' : 6,
-        'magic' : 8}
+    else:
+        return None
     return character
 
     """
@@ -53,21 +33,25 @@ def create_character(name, character_class,):
     # TODO: Implement this function
     # Remember to use calculate_stats() function for stat calculation
     pass
-def calculate_stats(character_class, level, character=None):
+def calculate_stats(character_class, level):
     for level in range(level):
         if character_class == 'Warrior':
-            character['strength'] *= 1.75
-            character['magic'] += 1
-            character['health'] += 20
+            strength = 28
+            magic = 11
+            health = 80
         elif character_class == 'Mage':
-            character['strength'] += 3
-            character['magic'] *= 1.75
-            character['health'] += 8
-        elif character_class == 'Rogues':
-            character['strength'] *= 1.20
-            character['magic'] *= 1.15
-            character['health'] += 5
-    lvl_stat = (character['strength'], character['magic'], character['health'])
+            strength = 10
+            magic = 33
+            health = 65
+        elif character_class == 'Rogue':
+            strength = 14
+            magic = 15
+            health = 37
+        elif character_class == 'Cleric':
+            strength = 14
+            magic = 26
+            health = 92
+    lvl_stat = (strength, magic, health)
     return lvl_stat
 
 
@@ -86,17 +70,19 @@ def calculate_stats(character_class, level, character=None):
     pass
 
 def save_character(character, filename):
-    with open(filename, 'w') as f:
-        f.write(f'Character Name: {character["name"]}')
-        f.write(f'Class: {str(character["class"])}')
-        f.write(f'Level: {str(character["level"])}')
-        f.write(f'Strength: {str(character["strength"])}')
-        f.write(f'Magic: {str(character["magic"])}')
-        f.write(f'Health: {str(character["health"])}')
-        f.write(f'Gold: {str(character["gold"])}')
-    with open(filename, 'r') as f:
-        character_data = f.read()
-    return character_data
+    directory = os.path.dirname(filename)
+    if directory and not os.path.exists(directory):
+        return False
+    else:
+        with open(filename, 'w') as f:
+            f.write(f'Character Name: {str(character["name"])}\n')
+            f.write(f'Class: {str(character["class"])}\n')
+            f.write(f'Level: {str(character["level"])}\n')
+            f.write(f'Strength: {str(character["strength"])}\n')
+            f.write(f'Magic: {str(character["magic"])}\n')
+            f.write(f'Health: {str(character["health"])}\n')
+            f.write(f'Gold: {str(character["gold"])}\n')
+        return True
 
     """
     Saves character to text file in specific format
@@ -116,10 +102,13 @@ def save_character(character, filename):
     pass
 
 def load_character(filename):
-    if filename is None:
-        print('None')
+    if os.path.isfile(filename):
+        return filename
     else:
-        print(filename)
+        return None
+
+
+
     """
     Loads character from text file
     Returns: character dictionary if successful, None if file not found
@@ -156,8 +145,27 @@ def display_character(character):
     pass
 
 def level_up(character):
-    level = character['level'] + 1
-    calculate_stats(character, level)
+    character['level'] += 1
+    for level in range(character['level']):
+        character['gold'] += 25
+        if character['class'] == 'Warrior':
+            character['strength'] *= 1.65
+            character['magic'] *= 1.15
+            character['health'] *= 1.65
+        elif character['class'] == 'Mage':
+            character['strength'] *= 1.20
+            character['magic'] *= 1.65
+            character['health'] *= 1.35
+        elif character['class'] == 'Rogue':
+            character['strength'] *= 1.45
+            character['magic'] *= 1.45
+            character['health'] *= 1.25
+        elif character['class'] == 'Cleric':
+            character['strength'] *= 1.40
+            character['magic'] *= 1.50
+            character['health'] *= 1.75
+        else:
+            return None
     return None
     """
     Increases character level and recalculates stats
@@ -174,7 +182,7 @@ if __name__ == "__main__":
     print("Test your functions here!")
     
     # Example usage:
-    char = create_character("TestHero", "Warrior")
-    display_character(char)
-    save_character(char, "my_character.txt")
+    #char = create_character("TestHero", "Warrior")
+    #display_character(char)
+    save_character('char', "my_character.txt")
     loaded = load_character("my_character.txt")
