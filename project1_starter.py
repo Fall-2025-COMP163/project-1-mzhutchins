@@ -103,13 +103,29 @@ def save_character(character, filename):
 
 def load_character(filename):
     if os.path.isfile(filename):
-        return filename
+        char_data = []
+        with open(filename, 'r') as f:
+            for line in f:
+                # Split lines like "Class: Warrior" into key/value
+                if ':' in line:
+                    value = line.strip().split(':', 1)[1]
+                    char_data.append(value.strip())
+        #print(char_data)
+        return {
+            'name': char_data[0],
+            'class': char_data[1],
+            'level': int(char_data[2]),
+            'strength': int(char_data[3]),
+            'magic': int(char_data[4]),
+            'health': int(char_data[5]),
+            'gold': int(char_data[6])
+        }
     else:
         return None
 
 
 
-    """
+    """-
     Loads character from text file
     Returns: character dictionary if successful, None if file not found
     """
@@ -180,9 +196,9 @@ def level_up(character):
 if __name__ == "__main__":
     print("=== CHARACTER CREATOR ===")
     print("Test your functions here!")
-    
+
     # Example usage:
-    #char = create_character("TestHero", "Warrior")
+    char = create_character("TestHero", "Warrior")
     #display_character(char)
-    save_character('char', "my_character.txt")
+    save_character(char, "my_character.txt")
     loaded = load_character("my_character.txt")
