@@ -1,0 +1,1 @@
+Character Name: JoséClass: WarriorLevel: 1Strength: 10Magic: 10Health: 50Gold: 100
