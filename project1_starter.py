@@ -66,11 +66,11 @@ def load_character(filename):
         char_data = []
         with open(filename, 'r') as f:
             for line in f:
-                # Split lines like "Class: Warrior" into key/value
+                # AI suggested Split lines like "Class: Warrior" into key/value
                 if ':' in line:
                     value = line.strip().split(':', 1)[1]
                     char_data.append(value.strip())
-        #print(char_data)
+        
         return {
             'name': char_data[0],
             'class': char_data[1],
